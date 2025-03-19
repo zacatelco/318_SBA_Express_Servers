@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventory</title>
+  </head>
+  <body>
+    <h1>Inventory</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>In Stock</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% inventory.forEach(item => { %>
+                <tr>
+                    <td><%= item.name %></td>
+                    <td><%= item.quantity %></td>
+                    <td><%= item.instock ? 'Yes' : 'No' %></td>
+                    <td><%= item.category %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <h2>Add New Item</h2>
+    <form action="/api/inventory" method="POST">
+        <label for="name">Item Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required>
+        
+        <label for="instock">In Stock:</label>
+        <input type="checkbox" id="instock" name="instock" value="true">
+        
+        <label for="category">Category:</label>
+        <select id="category" name="category">
+            <option value="Fruits">Fruits</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Dairy">Dairy</option>
+        </select>
+        
+        <button type="submit">Add Item</button>
+    </form>
+  </body>
+</html>
