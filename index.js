@@ -1,6 +1,8 @@
 const express = require("express");
-const bodyParser = require("body-parser");;
-const inventoryRouter = require("./routes/inventoryRouter")
+const bodyParser = require("body-parser");
+const inventoryRouter = require("./routes/inventoryRouter"); 
+const inventory = require("./data/inventoryData");
+
 const app = express();
 
 // Middleware to parse JSON and URL-encoded data
@@ -14,15 +16,19 @@ app.use((req, res, next) => {
 });
 
 // Set the template engine to EJS
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
-app.get("/", (res,req) => {
-    const inventory = require("./data/inventoryData")
-    res.render("index", {inventory});
-})
+// Serve static files (if needed)
+app.use(express.static("public"));
 
-app.use('/api', inventoryRouter);
+// Home Route - Render Inventory View
+app.get("/", (req, res) => {
+    res.render("index", { inventory });
+});
+
+// Use Inventory API Routes
+app.use("/api/inventory", inventoryRouter);
 
 app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+    console.log("Server running on http://localhost:3000");
 });

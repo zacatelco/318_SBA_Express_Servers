@@ -1,51 +1,38 @@
 const express = require("express");
 const router = express.Router();
-const inventory = require("../data/inventoryData");
+let inventory = require("../data/inventoryData");
 
-router.get('/inventory', (req, res) => {
+// Get all inventory items
+router.get("/", (req, res) => {
     res.json(inventory);
 });
 
-// Add an item to the inventory
-router.post("/api/inventory", (req, res) => {
-  const { name, quantity, instock, category } = req.body;
-  const newItem = {
-    id: inventory.length + 1,
-    name,
-    quantity: parseInt(quantity),
-    instock: instock === "true",
-    category,
-  };
-  inventory.push(newItem);
-  res.json(newItem);
-});
-
-// Update an inventory item
-router.put("/api/inventory/:id", (req, res) => {
-  const { id } = req.params;
-  const { name, quantity, instock, category } = req.body;
-  const item = inventory.find((item) => item.id === parseInt(id));
-  if (item) {
-    item.name = name || item.name;
-    item.quantity = quantity || item.quantity;
-    item.instock = instock === "true" || item.instock;
-    item.category = category || item.category;
+// Get a single item by ID
+router.get("/:id", (req, res) => {
+    const item = inventory.find((item) => item.id === parseInt(req.params.id));
+    if (!item) return res.status(404).json({ message: "Item not found" });
     res.json(item);
-  } else {
-    res.status(404).json({ message: "Item not found" });
-  }
 });
 
-// Delete an item from the inventory
-router.delete("/api/inventory/:id", (req, res) => {
-  const { id } = req.params;
-  const index = inventory.findIndex((item) => item.id === parseInt(id));
-  if (index !== -1) {
-    inventory.splice(index, 1);
+// Add a new inventory item
+router.post("/", (req, res) => {
+    const { name, quantity, instock, category } = req.body;
+    const newItem = {
+        id: inventory.length + 1,
+        name,
+        quantity: parseInt(quantity),
+        instock: instock === "true",
+        category,
+    };
+    inventory.push(newItem);
+    res.redirect("/");
+});
+
+// Delete an item
+router.delete("/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    inventory = inventory.filter((item) => item.id !== id);
     res.json({ message: "Item deleted" });
-  } else {
-    res.status(404).json({ message: "Item not found" });
-  }
 });
 
 module.exports = router;
